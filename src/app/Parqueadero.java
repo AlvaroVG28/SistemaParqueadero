@@ -88,6 +88,17 @@ public class Parqueadero {
         return -1;
     }
 
+    // Cuenta cuántas celdas están libres
+    private static int contarCeldasLibres() {
+        int libres = 0;
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+            if (tiposVehiculos[i] == null) {
+                libres++;
+            }
+        }
+        return libres;
+    }
+
     // Método obligatorio: Registro de Entrada
     private static void registrarEntrada() {
         int posicion = buscarCeldaDisponible();
@@ -113,6 +124,7 @@ public class Parqueadero {
         fechasIngreso[posicion] = fechaIngreso;
 
         mostrarMensaje("Vehículo registrado exitosamente en la celda " + (posicion + 1) + ".");
+        mostrarMensaje("Celdas libres disponibles: " + contarCeldasLibres());
     }
 
     // Lectura y validación de fecha/hora
