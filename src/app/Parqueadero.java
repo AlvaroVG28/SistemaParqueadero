@@ -22,8 +22,7 @@ public class Parqueadero {
     private static final int HORA_CIERRE = 22;
 
     // Formato de fecha
-    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("YYYY-MM-DD HH:MM");
-
+    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     // Arreglos paralelos para las celdas
     private static String[] tiposVehiculos = new String[CAPACIDAD_TOTAL];
     private static LocalDateTime[] fechasIngreso = new LocalDateTime[CAPACIDAD_TOTAL];
@@ -109,8 +108,7 @@ public class Parqueadero {
             mostrarMensaje("Error: Tipo de vehículo no válido. Intente nuevamente.");
         }
 
-        LocalDateTime fechaIngreso = leerFechaHora("Ingrese la fecha y hora de ingreso (YYYY-MM-DD HH:MM): ");
-
+        LocalDateTime fechaIngreso = leerFechaHora("Ingrese la fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
         tiposVehiculos[posicion] = tipo;
         fechasIngreso[posicion] = fechaIngreso;
 
@@ -124,7 +122,7 @@ public class Parqueadero {
             String texto = SCANNER.nextLine().trim();
 
             if (!formatoFechaHoraValido(texto)) {
-                mostrarMensaje("Error: Fecha u hora inválidas. Use YYYY-MM-DD HH:MM y horario 08:00-22:00.");
+                mostrarMensaje("Error: Fecha u hora inválidas. Use yyyy-MM-dd HH:mm y horario 08:00-22:00.");
                 continue;
             }
 
