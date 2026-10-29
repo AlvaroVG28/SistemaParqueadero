@@ -35,8 +35,7 @@ public class Parqueadero {
         boolean salir = false;
 
         while (!salir) {
-            mostrarMenu();
-            String opcion = SCANNER.nextLine().trim();
+            String opcion = leerOpcionMenu();
 
             switch (opcion) {
                 case "1":
@@ -55,8 +54,6 @@ public class Parqueadero {
                     salir = true;
                     mostrarMensaje("\n¡Gracias por usar el sistema de parqueadero!");
                     break;
-                default:
-                    mostrarMensaje("\nError: Opción no válida. Intente nuevamente.");
             }
             mostrarMensaje("");
         }
@@ -76,6 +73,19 @@ public class Parqueadero {
         mostrarMensaje("4. Reporte Financiero");
         mostrarMensaje("5. Salir");
         System.out.print("Seleccione una opción: ");
+    }
+
+    // Muestra el menú, lee la opción y valida que esté entre 1 y 5
+    private static String leerOpcionMenu() {
+        while (true) {
+            mostrarMenu();
+            String opcion = SCANNER.nextLine().trim();
+            if (opcion.equals("1") || opcion.equals("2") || opcion.equals("3")
+                    || opcion.equals("4") || opcion.equals("5")) {
+                return opcion;
+            }
+            mostrarMensaje("\nError: Opción no válida. Intente nuevamente.\n");
+        }
     }
 
     // Método obligatorio: Celda Disponible
@@ -109,15 +119,7 @@ public class Parqueadero {
         }
 
         mostrarMensaje("\n--- REGISTRO DE ENTRADA ---");
-        String tipo = "";
-        while (true) {
-            System.out.print("Ingrese tipo de vehículo (carro / moto): ");
-            tipo = SCANNER.nextLine().trim().toLowerCase();
-            if (tipo.equals("carro") || tipo.equals("moto")) {
-                break;
-            }
-            mostrarMensaje("Error: Tipo de vehículo no válido. Intente nuevamente.");
-        }
+        String tipo = leerTipoVehiculo();
 
         LocalDateTime fechaIngreso = leerFechaHora("Ingrese la fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
         tiposVehiculos[posicion] = tipo;
@@ -125,6 +127,18 @@ public class Parqueadero {
 
         mostrarMensaje("Vehículo registrado exitosamente en la celda " + (posicion + 1) + ".");
         mostrarMensaje("Celdas libres disponibles: " + contarCeldasLibres());
+    }
+
+    // Valida el tipo de vehículo: solo carro o moto
+    private static String leerTipoVehiculo() {
+        while (true) {
+            System.out.print("Ingrese tipo de vehículo (carro / moto): ");
+            String tipo = SCANNER.nextLine().trim().toLowerCase();
+            if (tipo.equals("carro") || tipo.equals("moto")) {
+                return tipo;
+            }
+            mostrarMensaje("Error: Tipo de vehículo no válido. Intente nuevamente.");
+        }
     }
 
     // Lectura y validación de fecha/hora
