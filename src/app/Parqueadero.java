@@ -42,7 +42,7 @@ public class Parqueadero {
                     registrarEntrada();
                     break;
                 case "2":
-                    mostrarMensaje("\n[Opción 2: Registrar Salida - En desarrollo]");
+                    registrarSalida();
                     break;
                 case "3":
                     mostrarMensaje("\n[Opción 3: Reporte de Ocupación - En desarrollo]");
@@ -129,6 +129,34 @@ public class Parqueadero {
         mostrarMensaje("Celdas libres disponibles: " + contarCeldasLibres());
     }
 
+    // Método obligatorio: Registro de Salida
+    private static void registrarSalida() {
+        int numero = leerNumeroCelda();
+        int posicion = numero - 1;
+
+        if (tiposVehiculos[posicion] == null) {
+            mostrarMensaje("\nError: La celda " + numero + " está vacía. No hay vehículo para registrar salida.");
+            return;
+        }
+
+        LocalDateTime ingreso = fechasIngreso[posicion];
+        LocalDateTime salida;
+        while (true) {
+            salida = leerFechaHora("Ingrese la fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+            if (!salida.isBefore(ingreso)) {
+                break;
+            }
+            mostrarMensaje("Error: La fecha de salida no puede ser anterior a la de ingreso. Intente de nuevo.");
+        }
+
+        mostrarMensaje("\n--- REGISTRO DE SALIDA ---");
+        mostrarMensaje("Celda: " + numero);
+        mostrarMensaje("Tipo de vehículo: " + tiposVehiculos[posicion]);
+        mostrarMensaje("Fecha de ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+        mostrarMensaje("Fecha de salida: " + salida.format(FORMATO_FECHA_HORA));
+        mostrarMensaje("[Liquidación y liberación de celda: en el siguiente paso]");
+    }
+
     // Valida el tipo de vehículo: solo carro o moto
     private static String leerTipoVehiculo() {
         while (true) {
@@ -138,6 +166,19 @@ public class Parqueadero {
                 return tipo;
             }
             mostrarMensaje("Error: Tipo de vehículo no válido. Intente nuevamente.");
+        }
+    }
+
+    // Valida el número de celda: debe estar entre 1 y CAPACIDAD_TOTAL
+    private static int leerNumeroCelda() {
+        while (true) {
+            System.out.print("Ingrese el número de celda (1 a " + CAPACIDAD_TOTAL + "): ");
+            String texto = SCANNER.nextLine().trim();
+            int numero = leerDigitos(texto, 0, texto.length());
+            if (numero >= 1 && numero <= CAPACIDAD_TOTAL) {
+                return numero;
+            }
+            mostrarMensaje("Error: Número de celda no válido. Intente nuevamente.");
         }
     }
 
