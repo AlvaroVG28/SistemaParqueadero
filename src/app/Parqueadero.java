@@ -149,12 +149,70 @@ public class Parqueadero {
             mostrarMensaje("Error: La fecha de salida no puede ser anterior a la de ingreso. Intente de nuevo.");
         }
 
-        mostrarMensaje("\n--- REGISTRO DE SALIDA ---");
-        mostrarMensaje("Celda: " + numero);
-        mostrarMensaje("Tipo de vehículo: " + tiposVehiculos[posicion]);
+        String tipo = tiposVehiculos[posicion];
+        double total = liquidar(posicion, salida);
+
+        if (tipo.equals("carro")) {
+            recaudoCarros = recaudoCarros + total;
+        } else {
+            recaudoMotos = recaudoMotos + total;
+        }
+
+        tiposVehiculos[posicion] = null;
+        fechasIngreso[posicion] = null;
+
+        mostrarMensaje("La celda " + numero + " quedó libre. Celdas libres disponibles: " + contarCeldasLibres());
+    }
+
+    // Método obligatorio: Liquidación
+    private static double liquidar(int posicion, LocalDateTime salida) {
+        String tipo = tiposVehiculos[posicion];
+        LocalDateTime ingreso = fechasIngreso[posicion];
+
+        long diasACobrar = contarDiasCompletos(ingreso, salida);
+        LocalDateTime cursor = ingreso.plusDays(diasACobrar);
+        long horasACobrar = calcularHorasRestantes(cursor, salida);
+
+        if (horasACobrar >= UMBRAL_HORAS_DIA) {
+            diasACobrar++;
+            horasACobrar = 0;
+        }
+
+        double tarifaDia;
+        double tarifaHora;
+        if (tipo.equals("carro")) {
+            tarifaDia = TARIFA_DIA_CARRO;
+            tarifaHora = TARIFA_HORA_CARRO;
+        } else {
+            tarifaDia = TARIFA_DIA_MOTO;
+            tarifaHora = TARIFA_HORA_MOTO;
+        }
+
+        double totalDias = diasACobrar * tarifaDia;
+        double totalHoras = horasACobrar * tarifaHora;
+        double total = totalDias + totalHoras;
+
+        mostrarMensaje("\n--- FACTURA ---");
+        mostrarMensaje("Celda liberada: " + (posicion + 1));
+        mostrarMensaje("Tipo de vehículo: " + tipo);
         mostrarMensaje("Fecha de ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
-        mostrarMensaje("Fecha de salida: " + salida.format(FORMATO_FECHA_HORA));
-        mostrarMensaje("[Liquidación y liberación de celda: en el siguiente paso]");
+        mostrarMensaje("Fecha de salida:  " + salida.format(FORMATO_FECHA_HORA));
+        mostrarMensaje("Días cobrados:  " + diasACobrar + " x " + (long) tarifaDia + " = " + (long) totalDias);
+        mostrarMensaje("Horas cobradas: " + horasACobrar + " x " + (long) tarifaHora + " = " + (long) totalHoras);
+        mostrarMensaje("TOTAL A PAGAR: " + (long) total);
+
+        return total;
+    }
+
+    // Cuenta los días completos (bloques de 24 horas) entre ingreso y salida
+    private static long contarDiasCompletos(LocalDateTime ingreso, LocalDateTime salida) {
+        return ChronoUnit.DAYS.between(ingreso, salida);
+    }
+
+    // Calcula las horas restantes redondeando hacia arriba cualquier fracción
+    private static long calcularHorasRestantes(LocalDateTime cursor, LocalDateTime salida) {
+        long minutosRestantes = Duration.between(cursor, salida).toMinutes();
+        return (minutosRestantes + 59) / 60;
     }
 
     // Valida el tipo de vehículo: solo carro o moto
