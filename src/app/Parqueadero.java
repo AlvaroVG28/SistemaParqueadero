@@ -45,10 +45,10 @@ public class Parqueadero {
                     registrarSalida();
                     break;
                 case "3":
-                    mostrarMensaje("\n[Opción 3: Reporte de Ocupación - En desarrollo]");
+                    reporteOcupacion();
                     break;
                 case "4":
-                    mostrarMensaje("\n[Opción 4: Reporte Financiero - En desarrollo]");
+                    reporteFinanciero();
                     break;
                 case "5":
                     salir = true;
@@ -107,6 +107,17 @@ public class Parqueadero {
             }
         }
         return libres;
+    }
+
+    // Cuenta cuántas celdas están ocupadas
+    private static int contarCeldasOcupadas() {
+        int ocupadas = 0;
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+            if (tiposVehiculos[i] != null) {
+                ocupadas++;
+            }
+        }
+        return ocupadas;
     }
 
     // Método obligatorio: Registro de Entrada
@@ -294,5 +305,21 @@ public class Parqueadero {
             valor = valor * 10 + caracter - '0';
         }
         return valor;
+    }
+
+    // Método obligatorio: Reporte de Ocupación
+    private static void reporteOcupacion() {
+        mostrarMensaje("\n--- REPORTE DE OCUPACIÓN ---");
+        mostrarMensaje("Celdas ocupadas: " + contarCeldasOcupadas());
+        mostrarMensaje("Celdas libres: " + contarCeldasLibres());
+    }
+
+    // Método obligatorio: Reporte Financiero
+    private static void reporteFinanciero() {
+        double totalGeneral = recaudoCarros + recaudoMotos;
+        mostrarMensaje("\n--- REPORTE FINANCIERO ---");
+        mostrarMensaje("Recaudo por carros: " + (long) recaudoCarros);
+        mostrarMensaje("Recaudo por motos: " + (long) recaudoMotos);
+        mostrarMensaje("Total general: " + (long) totalGeneral);
     }
 }
